@@ -1,11 +1,12 @@
+
 #!/bin/bash
 
 # Install prerequisites
 # Taken from mfmjos's fork of chasing_your_tail
 
 # Install Kismet
-wget https://www.kismetwireless.net/repos/kismet-release.gpg.key | sudo apt-key add -
-echo "deb https://www.kismetwireless.net/repos/apt/release/$(lsb_release -cs) $(lsb_release -cs) main" |sudo tee /etc/apt/sources.list.d/kismet.list
+wget -O - https://www.kismetwireless.net/repos/kismet-release.gpg.key --quiet | gpg --dearmor | sudo tee /usr/share/keyrings/kismet-archive-keyring.gpg >/dev/null
+echo 'deb [signed-by=/usr/share/keyrings/kismet-archive-keyring.gpg] https://www.kismetwireless.net/repos/apt/release/bullseye bullseye main' | sudo tee /etc/apt/sources.list.d/kismet.list >/dev/null
 sudo apt-get update
 sudo apt-get install kismet
 
@@ -24,12 +25,14 @@ mkdir $HOME/kismet_logs
 # Change default Kismet logging directory
 echo log_prefix=$HOME/kismet_logs/ | sudo tee -a /etc/kismet/kismet_logging.conf
 
-# Autostart the GUI, Kismet, and enable monitor mode at boot
+# Autostart the GUI, Kismet, and enable monitor mode at boot. I created a separate startup script to run cyt_gui.py and kismet (see startup.sh)
 autostartFile="/etc/xdg/autostart/display.desktop"
-echo "[Desktop Entry]" | sudo tee -a $autostartFile
-echo "Name=cyt_gui" | sudo tee -a $autostartFile
-echo "Exec=$HOME/Desktop/cyt_gui.sh" | sudo tee -a $autostartFile
-echo "@reboot sleep 30 && $HOME/Desktop/cyt/wlan1_to_mon.sh &" | sudo tee -a $autostartFile
-echo "@reboot sleep 60 && /usr/bin/kismet &" | sudo tee -a $autostartFile
+bash
+su
+echo "[Desktop Entry]" | tee -a $autostartFile  
+echo "Name=CYT_GUI" | tee -a $autostartFile
+echo "NoDisplay=false" | tee -a $autostartFile  
+echo "X-GNOME-Autostart-enabled=true" | tee -a $autostartFile  
+echo "Exec=startup.sh" | tee -a $autostartFile
 
 echo "Prereq installer complete. Please reboot now"
