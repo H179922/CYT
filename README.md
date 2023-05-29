@@ -1,15 +1,19 @@
-# ShadowGuard
+# ShadowGuard (fork)
 Tool for using nearby wireless signals to help determine if you're being followed. 
 
 Released under the MIT License https://opensource.org/licenses/MIT
 
 ## Chasing Your Tail
-This is a fork of [Chasing Your Tail](https://github.com/azmatt/chasing_your_tail) by azmatt. I thought the project was interesting and could grow into something neat.
+This is a fork of [Chasing Your Tail](https://github.com/azmatt/chasing_your_tail) by azmatt and [ShadowGuard](https://github.com/nobodynate/ShadowGuard) by nobodynate
 
-My goals are to:
-1. Refactor the code to be more modular - this should make expansion and future contribs easier.
-1. Remove hardcoded file paths
-1. Create an install script
-1. Add some interaction/lookups with wigle.net API
-1. Add more wireless technologies
+I'd been trying to get this work last year and had a bunch of trouble, so if this is somehow useful for others I figure I'll see if I can make a mess of sharing it (first timer).  
 
+I'm going about this in no particular order
+
+- chasing_your_tail.py
+- I was getting an error initially
+- 'Traceback (most recent call last):
+  File "/home/auser/ShadowGuard/cyt/chasing_your_tail.py", line 16, in <module>
+    cyt_sub.mkdir(parents=True, exist_ok=True)
+
+- Next 
