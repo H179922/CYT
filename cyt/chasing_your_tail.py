@@ -1,7 +1,6 @@
 ### Chasing Your Tail V04_15_22
 ### @matt0177
 ### Released under the MIT License https://opensource.org/licenses/MIT
-###
 
 import sqlite3
 import time
@@ -10,9 +9,10 @@ import glob
 import os
 import json
 import pathlib
+print(db_path)
 
 ### Check for/make subdirectories for logs, ignore lists etc.
-cyt_sub = os.path.expanduser('~/Desktop/cyt/cyt_sub')
+cyt_sub = pathlib.Path(os.path.expanduser('~/cyt/cyt_sub'))
 cyt_sub.mkdir(parents=True, exist_ok=True)
 
 print ('Current Time: ' + time.strftime('%Y-%m-%d %H:%M:%S'))
@@ -20,7 +20,7 @@ print ('Current Time: ' + time.strftime('%Y-%m-%d %H:%M:%S'))
 ### Create Log file
 
 timestamp = time.strftime('%m%d%y_%H%M%S')
-log_file_name = os.path.expanduser(f'~/Desktop/cyt/cyt_sub/cyt_log_{timestamp}')
+log_file_name = os.path.expanduser(f'~/cyt/cyt_sub/cyt_log_{timestamp}')
 
 cyt_log = open(log_file_name,"w", buffering=1) 
 
@@ -80,7 +80,8 @@ past_five_mins_ssids = []
 
 ### Calculate Time Variables
 two_mins_ago = datetime.now() + timedelta(minutes=-2)  
-unixtime_2_ago = time.mktime(two_mins_ago.timetuple())  ### Two Minute time used for current results
+unixtime_2_ago = time.mktime(two_mins_ago.timetuple())  
+### Two Minute time used for current results
 five_mins_ago = datetime.now() + timedelta(minutes=-5)
 unixtime_5_ago = time.mktime(five_mins_ago.timetuple())
 ten_mins_ago = datetime.now() + timedelta(minutes=-10)
@@ -92,10 +93,13 @@ unixtime_20_ago = time.mktime(twenty_mins_ago.timetuple())
 
 ######Find Newest DB file
 list_of_files = glob.glob(db_path)
-latest_file = max(list_of_files, key=os.path.getctime)
-print ("Pulling data from: {}".format(latest_file))
-cyt_log.write ("Pulling data from: {} \n".format(latest_file))
-con = sqlite3.connect(latest_file) ## kismet DB to point at
+if list_of_files:  # Only proceed if there are files
+    latest_file = max(list_of_files, key=os.path.getctime)
+    print ("Pulling data from: {}".format(latest_file))
+    cyt_log.write ("Pulling data from: {} \n".format(latest_file))  
+    con = sqlite3.connect(latest_file) ## kismet DB to point at
+else:
+    print("No files found!")
 
 ######Initialize macs past five minutes
 
@@ -117,6 +121,7 @@ sql_fetch_past_5(con)
 
 print ("{} MACS added to the within the past 5 mins list".format(len(past_five_mins_macs)))
 cyt_log.write ("{} MACS added to the within the past 5 mins list \n".format(len(past_five_mins_macs)))
+
 ######Initialize macs five to ten minutes ago
 
 def sql_fetch_5_to_10(con): 
